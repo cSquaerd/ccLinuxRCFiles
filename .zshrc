@@ -49,6 +49,8 @@ alias sdvm="sudo vim"
 # cool programs aliases
 alias nload="nload -u H -t 250"
 alias cmatrix="cmatrix -bu 2"
+alias banner="banner -f 2 -c # "
+alias polltemps="sensors | tail | grep \"Tctl\|edge\" | awk '/Tctl/ {printf \"CPU: %4.1f\n\", \$2} /edge/ {printf \"GFX: %4.1f\n\", \$2}'"
 # tmux aliases
 alias tmuxs="tmux new -s tmux"
 alias tmuxr="tmux attach"
