@@ -56,6 +56,8 @@ alias mydate="date \"+%_m/%_d/%g, %_I:%M:%S %p\""
 alias logtemp="(mydate; polltemps; echo ---)"
 tmprFile="~/.temperature.dat"
 alias tempgraph="READINGS=1; while : ; do; logtemp >> $tmprFile; (filtertemps $tmprFile | tail -n \$READINGS) | termgraph --color {black,blue} --suffix \" °C\"; READINGS=\$(echo \"if ( (2*\$READINGS+1)+6 < \$LINES) \$READINGS+1 else (\$LINES - 6) / 2\" | bc); sleep 1; done"
+alias getrand="hexdump -dn 1 /dev/random | head -n 1 | awk '{print \$2}' | cut -c 3-5"
+alias rolldice="() { echo \"Rolling \$2d\$1...\"; SUM=0; for i in \$(seq 1 \$2); do; ROLL=\$(echo \"(\" \$(getrand) \"% \$1) + 1\" | bc); printf \"Got a % 6d!\n\" \$ROLL; SUM=\$(echo \"\$SUM + \$ROLL\" | bc); done; printf \"Total: % 5d\n\" \$SUM }"
 # tmux aliases
 alias tmuxs="tmux new -s tmux"
 alias tmuxr="tmux attach"
