@@ -46,6 +46,11 @@ alias update="upd"
 # text editor aliases
 alias vm="vim"
 alias sdvm="sudo vim"
+# ssh-agent aliases
+alias sysusr="systemctl --user"
+alias sshkls="ssh-add -l"
+alias sshkul="ssh-add .ssh/daedalusKey"
+alias sshklk="ssh-add -D"
 # cool programs aliases
 alias nload="nload -u H -t 250"
 alias cmatrix="cmatrix -bu 2"
@@ -70,15 +75,15 @@ alias cowsay="cowsay -W 72"
 alias fortune="fortune -sn 384 computers debian education linux literature magic news perl science startrek wisdom"
 # cowfile fetchers
 alias getspam="shufone \$(\\ls ~/cowfiles/spam*)"
-alias gethero="shufone \$(\\ls ~/cowfiles/*ff*)"
+alias gethero="shufone \$(\\ls ~/cowfiles/*_ff*)"
 alias getsprite="shufone \$(\\ls ~/cowfiles/*)"
 # delayed printing
 alias printstag="awk '{print \$0; system(\"sleep 0.035\");}'"
 alias printslow="awk '{print \$0; system(\"sleep 0.100\");}'"
 # very fun stuff aliases
-alias spritefortune="fortune | cowsay -f \$(getsprite) | printstag"
-alias herofortune="fortune | cowsay -f \$(gethero) | printstag"
-alias spamfortune="fortune | cowsay -f \$(getspam) | printstag"
+alias spritefortune="fortune | cowsay -f \$(getsprite)"
+alias herofortune="fortune | cowsay -f \$(gethero)"
+alias spamfortune="fortune | cowsay -f \$(getspam)"
 # Get the navigation keys to actually work like in bash
 typeset -g -A key
 # Map the keycodes from terminfo to something usable
