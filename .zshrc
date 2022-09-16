@@ -25,6 +25,7 @@ alias path="env | grep PATH="
 alias lsblk="lsblk -o NAME,TYPE,FSTYPE,SIZE,FSUSED,FSUSE%,MOUNTPOINT"
 alias watch="watch -td -cpn 1 "
 alias shufone="shuf -en 1"
+alias top="top -d 1 -e m -E g -u charlie"
 # pacman & yay aliases
 alias pacins="sudo pacman -Sy"
 alias pacsch="pacman -Ss"
