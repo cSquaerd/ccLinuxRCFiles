@@ -44,7 +44,7 @@ function rebootCheck() {
 	getKernelVersions
 	echo '  Running Kernel Version:' $runningKernel
 	echo 'Installed Kernel Version:' $installedKernel;
-	if [ "$runningKernel" == "$installedKernel" ]; then
+	if [[ "$runningKernel" == "$installedKernel" ]]; then
 		echo 'No reboot required.'
 	else
 		echo 'New kernel installed! Please reboot!'
