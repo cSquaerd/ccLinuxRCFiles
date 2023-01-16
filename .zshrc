@@ -40,7 +40,16 @@ alias grin="grep installed -A 1"
 kernelName="linux-zen"
 kernelSuffix="zen"
 alias getKernelVersions="installedKernel=\$(pacman -Q $kernelName | awk '{print \$2}' | awk -F '.$kernelSuffix' '{print \$1}'); runningKernel=\$(uname -r | awk -F '-' '{print \$1}')"
-alias rebootCheck="getKernelVersions; echo '  Running Kernel Version:' \$runningKernel; echo 'Installed Kernel Version:' \$installedKernel; if [ \"\$runningKernel\" \=\= \"\$installedKernel\" ]; then; echo 'No reboot required.'; else; echo 'New kernel installed! Please reboot!'; fi"
+function rebootCheck() {
+	getKernelVersions
+	echo '  Running Kernel Version:' $runningKernel
+	echo 'Installed Kernel Version:' $installedKernel;
+	if [ "$runningKernel" == "$installedKernel" ]; then
+		echo 'No reboot required.'
+	else
+		echo 'New kernel installed! Please reboot!'
+	fi
+}
 # update one-liner script & alias
 alias upd="yay -Syu; yay -Sc; pacrmv \$(pacman -Qtdq); echo; rebootCheck; echo; echo 'Update complete.'; echo"
 alias update="upd"
@@ -62,9 +71,59 @@ alias filtertemps="echo \"@ GFX,CPU\"; awk '/GFX/ {printf \$2\",\"}; /CPU/ {prin
 alias mydate="date \"+%_m/%d/%g, %_I:%M:%S %p\""
 alias logtemp="(mydate; polltemps; echo ---)"
 tmprFile="~/.temperature.dat"
-alias tempgraph="READINGS=1; while : ; do; logtemp >> $tmprFile; (filtertemps $tmprFile | tail -n \$READINGS) | termgraph --color {black,blue} --suffix \" °C\"; READINGS=\$(echo \"if ( (2*\$READINGS+1)+6 < \$LINES) \$READINGS+1 else (\$LINES - 6) / 2\" | bc); sleep 1; done"
+function tempgraph() {
+	READINGS=1;
+	if [[ "$1" != "" ]]; then
+		TERMGRAPHSLEEP=$1
+	else
+		TERMGRAPHSLEEP=1
+	fi
+	while : ; do
+		eval "logtemp >> $tmprFile"
+		eval "(filtertemps $tmprFile | tail -n $READINGS) | termgraph --color {blue,black} --suffix \" °C\""
+		READINGS=$(echo "if ( (2*$READINGS+1)+6 < $LINES ) $READINGS+1 else ($LINES - 6) / 2" | bc)
+		sleep $TERMGRAPHSLEEP
+	done
+}
 alias getrand="hexdump -dn 1 /dev/random | head -n 1 | awk '{print \$2}' | cut -c 3-5"
-alias rolldice="() { echo \"Rolling \$2d\$1...\"; SUM=0; for i in \$(seq 1 \$2); do; ROLL=\$(echo \"(\" \$(getrand) \"% \$1) + 1\" | bc); printf \"Got a % 6d!\n\" \$ROLL; SUM=\$(echo \"\$SUM + \$ROLL\" | bc); done; printf \"Total: % 5d\n\" \$SUM }"
+function rolldice() {
+	echo "Rolling $2d$1..."
+	SUM=0
+	for i in $(seq 1 $2); do
+		ROLL=$(echo "(" $(getrand) "% $1) + 1" | bc)
+		printf "Got a % 6d!\n" $ROLL
+		SUM=$(echo "$SUM + $ROLL" | bc)
+	done
+	printf "Total: % 5d\n" $SUM
+}
+loadbar_delay=0.1225
+function loadbar() {
+	LIMIT=$(echo "$1 * 8" | bc 2>/dev/null)
+	if (( $? == 2 )); then
+		LIMIT=40
+	fi
+	for I in $(seq 1 $LIMIT); do
+		if (( $I % 80 == 0 )); then
+			echo '!';
+		elif (( $I % 8 == 0 )) then
+			echo -n '!'
+		elif (( $I % 4 == 0 )); then
+			echo -n ':'
+		else
+			echo -n '.'
+		fi
+		sleep $loadbar_delay
+	done
+	echo
+}
+TIMEFMT="%*E"
+function loadbar-delta() {
+	echo "NOW RUNNING 10 SECOND LOADBAR..."
+	TENSEC=$({ time ( loadbar 10 1>/dev/null ); } 2>&1)
+	echo "ELAPSED TIME: $TENSEC"
+	echo "CURRENT DELAY: $loadbar_delay"
+	echo -n "DELTA: "; echo "0.125 - ($TENSEC / 80)" | bc -l
+}
 # tmux aliases
 alias tmuxs="tmux new -s tmux"
 alias tmuxr="tmux attach"
