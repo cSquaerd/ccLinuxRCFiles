@@ -104,9 +104,9 @@ function loadbar() {
 	fi
 	for I in $(seq 1 $LIMIT); do
 		if (( $I % 80 == 0 )); then
-			echo '!';
+			echo -e '\x1B[0;5;7m!\x1B[0m'
 		elif (( $I % 8 == 0 )) then
-			echo -n '!'
+			echo -en '\x1B[0;5;7m!\x1B[0m'
 		elif (( $I % 4 == 0 )); then
 			echo -n ':'
 		else
@@ -173,5 +173,5 @@ if [[ "${TERM}" == "linux" ]] then
 	setfont latarcyrheb-sun32;
 fi
 # Shell startup
-ufetch | printstag; spritefortune | printstag
+( pfetch; spritefortune ) | printstag
 
