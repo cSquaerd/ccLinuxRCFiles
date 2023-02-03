@@ -144,6 +144,21 @@ alias printslow="awk '{print \$0; system(\"sleep 0.100\");}'"
 alias spritefortune="fortune | cowsay -f \$(getsprite)"
 alias herofortune="fortune | cowsay -f \$(gethero)"
 alias spamfortune="fortune | cowsay -f \$(getspam)"
+function show-cowfiles() {
+	X=""
+	while : ; do
+		for c in ~/cowfiles/*; do
+			cowsay -f $c $(basename -s ".cow" $c) | printstag
+			read -k 1 -t 0.5 X
+			if [[ ${#X} -gt 0 ]]; then
+				break
+			fi
+		done
+	if [[ ${#X} -gt 0 ]]; then
+		break
+	fi
+	done
+}
 # Get the navigation keys to actually work like in bash
 typeset -g -A key
 # Map the keycodes from terminfo to something usable
