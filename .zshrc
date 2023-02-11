@@ -146,7 +146,10 @@ alias herofortune="fortune | cowsay -f \$(gethero)"
 alias spamfortune="fortune | cowsay -f \$(getspam)"
 function show-cowfiles() {
 	X=""
+	PATHTOCOWSPRITES=/home/charlie/Desktop/ccCowsprites
 	while : ; do
+		python ${PATHTOCOWSPRITES}/paletteTest.py | printstag
+		sleep 0.5
 		for c in ~/cowfiles/*; do
 			cowsay -f $c $(basename -s ".cow" $c) | printstag
 			read -k 1 -t 0.5 X
