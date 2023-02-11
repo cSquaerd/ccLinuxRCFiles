@@ -35,7 +35,7 @@ echo
 
 ffmpeg \
 	-f v4l2 -i $1 \
-	-f alsa -i pulse \
+	-f pulse -i default \
 	-b:v ${BITRATE}M -maxrate ${BITRATE}M -bufsize ${BUFSIZE}M \
 	-preset veryfast -c:v libx264 -c:a libvorbis \
 	-f matroska $2/recording-$(date "+%m_%d_%y-%I_%M_%S-%p").mkv
