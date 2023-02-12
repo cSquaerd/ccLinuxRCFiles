@@ -41,6 +41,13 @@ if [[ $MODE != "audio-only" ]]; then
 	echo "Now resetting UCVVideo kernel module to clear out potential bad video data..."
 	# Empty out the video buffer
 	sudo modprobe -vr uvcvideo
+
+	for I in $(seq 1 3); do
+		sleep 1
+		echo -n "."
+	done
+	echo
+
 	sudo modprobe -v uvcvideo
 
 	for I in $(seq 1 3); do

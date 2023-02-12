@@ -22,17 +22,6 @@ if [[ ${#4} -gt 0 ]]; then
 	BUFSIZE=$4
 fi
 
-echo "Now resetting UCVVideo kernel module to clear out potential bad video data..."
-# Empty out the video buffer
-sudo modprobe -vr uvcvideo
-sudo modprobe -v uvcvideo
-
-for I in $(seq 1 3); do
-	sleep 1
-	echo -n "."
-done
-echo
-
 ffmpeg \
 	-f v4l2 -i $1 \
 	-f pulse -i default \
@@ -43,6 +32,13 @@ ffmpeg \
 echo "Now resetting UCVVideo kernel module to clear out potential bad video data..."
 # Empty out the video buffer
 sudo modprobe -vr uvcvideo
+
+for I in $(seq 1 3); do
+	sleep 1
+	echo -n "."
+done
+echo
+
 sudo modprobe -v uvcvideo
 
 for I in $(seq 1 3); do
