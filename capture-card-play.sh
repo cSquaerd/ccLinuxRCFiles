@@ -30,10 +30,10 @@ case $MODE in
 		ffplay -f pulse -i default
 		;;
 	video-only)
-		ffplay -f v4l2 -i $DEV
+		ffplay -f v4l2 -i $DEV -fs
 		;;
 	*)
-		ffplay -f v4l2 -i $DEV 2>/dev/null & ffplay -f pulse -i default
+		ffplay -f v4l2 -i $DEV -fs 2>/dev/null & ffplay -f pulse -i default
 		;;
 esac
 
