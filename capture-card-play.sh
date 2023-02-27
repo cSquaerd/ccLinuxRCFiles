@@ -1,19 +1,23 @@
 #!/bin/bash
 if [[ $1 == "-h" || $1 == "--help" ]]; then
 	echo "Usage:"
-	echo -e "\t./capture-card-record.sh (/dev video device) (a/audio-only/v/video-only)"
+	echo -e "\t./capture-card-record.sh (/dev video device) (pulse input ID number) (a/audio-only/v/video-only)"
 	exit
 elif [[ ${#1} -lt 1 ]]; then
 	echo "Error: no /dev/video device provided!"
 	exit
+elif [[ ${#2} -lt 1 ]]; then
+	echo "Error: no PulseAudio input ID provided!"
+	exit
 fi
 
-DEV=$1
+VIDDEV=$1
+AUDDEV=$2
 
-if [[ ${#2} -eq 0 ]]; then
+if [[ ${#3} -eq 0 ]]; then
 	MODE=""
-elif [[ ${#2} -eq 1 ]]; then
-	case $2 in
+elif [[ ${#3} -eq 1 ]]; then
+	case $3 in
 		a)
 			MODE=audio-only
 			;;
@@ -22,18 +26,18 @@ elif [[ ${#2} -eq 1 ]]; then
 			;;
 	esac
 else
-	MODE=$2
+	MODE=$3
 fi
 
 case $MODE in
 	audio-only)
-		ffplay -f pulse -i default
+		ffplay -f pulse -i $AUDDEV
 		;;
 	video-only)
-		ffplay -f v4l2 -i $DEV -fs
+		ffplay -f v4l2 -i $VIDDEV -fs
 		;;
 	*)
-		ffplay -f v4l2 -i $DEV -fs 2>/dev/null & ffplay -f pulse -i default
+		ffplay -f v4l2 -i $VIDDEV -fs 2>/dev/null & ffplay -f pulse -i $AUDDEV
 		;;
 esac
 
