@@ -21,6 +21,9 @@ elif [[ ${#3} -eq 1 ]]; then
 		a)
 			MODE=audio-only
 			;;
+		t)
+			MODE=tv-aspect
+			;;
 		v)
 			MODE=video-only
 			;;
@@ -29,15 +32,26 @@ else
 	MODE=$3
 fi
 
+echo "MODE IS $MODE"
+
 case $MODE in
 	audio-only)
+		echo "Playing audio only"
 		ffplay -f pulse -i $AUDDEV
 		;;
 	video-only)
-		ffplay -f v4l2 -i $VIDDEV -fs
+		echo "Playing video only..."
+		ffplay -f v4l2 -i $VIDDEV
+		;;
+	tv-aspect)
+		echo "Playing in TV mode..."
+		ffplay -f v4l2 -i $VIDDEV -vf scale=1440:1080 &
+		ffplay -f pulse -i $AUDDEV 2>/dev/null
 		;;
 	*)
-		ffplay -f v4l2 -i $VIDDEV -fs 2>/dev/null & ffplay -f pulse -i $AUDDEV
+		echo "Playing video and audio..."
+		ffplay -f v4l2 -i $VIDDEV &
+		ffplay -f pulse -i $AUDDEV 2>/dev/null
 		;;
 esac
 
