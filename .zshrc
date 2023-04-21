@@ -93,7 +93,7 @@ function ala_alpha_tick {
 	(( NEWALPHA = $OLDALPHA + $DELTA ))
 
 	if (( $NEWALPHA >= 0.0 && $NEWALPHA <= 1.0 )); then
-		sed -i .old "s/opacity: $OLDALPHA/opacity: $NEWALPHA/" ~/.alacritty.yml
+		sed -i.old "s/opacity: $OLDALPHA/opacity: $NEWALPHA/" ~/.alacritty.yml
 	fi
 }
 alias alaalphp="ala_alpha_tick 0.05"
