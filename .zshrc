@@ -61,6 +61,43 @@ alias sysusr="systemctl --user"
 alias sshkls="ssh-add -l"
 alias sshkul="ssh-add .ssh/daedalusKey"
 alias sshklk="ssh-add -D"
+# Alacritty settings aliases
+alias alaftszg="grep size ~/.alacritty.yml | cut -d ':' -f 2 | xargs"
+function ala_font_size_set {
+	MINSIZE=8
+	if (( ${#2} == 0 )); then
+		OLDSIZE=$(alaftszg)
+	else
+		OLDSIZE=$2
+	fi
+	NEWSIZE=$1
+
+	if (( $NEWSIZE >= $MINSIZE )); then
+		sed -i.old "s/size: $OLDSIZE/size: $NEWSIZE/" ~/.alacritty.yml
+	fi
+}
+function ala_font_size_tick {
+	DELTA=$1
+	OLDSIZE=$(alaftszg)
+	(( NEWSIZE = $OLDSIZE + $DELTA ))
+
+	ala_font_size_set $NEWSIZE $OLDSIZE
+}
+alias alaftszs="ala_font_size_set"
+alias alaftszp="ala_font_size_tick 1"
+alias alaftszm="ala_font_size_tick -1"
+alias alaalphg="grep opacity ~/.alacritty.yml | cut -d ':' -f 2 | xargs"
+function ala_alpha_tick {
+	DELTA=$1
+	OLDALPHA=$(alaalphg)
+	(( NEWALPHA = $OLDALPHA + $DELTA ))
+
+	if (( $NEWALPHA >= 0.0 && $NEWALPHA <= 1.0 )); then
+		sed -i .old "s/opacity: $OLDALPHA/opacity: $NEWALPHA/" ~/.alacritty.yml
+	fi
+}
+alias alaalphp="ala_alpha_tick 0.05"
+alias alaalphm="ala_alpha_tick -0.05"
 # cool programs aliases
 alias nload="nload -u H -t 250"
 alias cmatrix="cmatrix -bu 2"
