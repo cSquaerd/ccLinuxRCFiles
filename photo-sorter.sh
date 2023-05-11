@@ -28,6 +28,7 @@ fi
 function list-sorting-dirs {
 	DIRS=($@)
 	if (( ${#DIRS[@]} == 0 )); then
+		echo
 		echo "Warning: No dirs provided."
 		return
 	fi
@@ -48,6 +49,11 @@ SORTING_DIRS=()
 for DIR in $DEST_DIR/*/; do
 	SORTING_DIRS+=($DIR)
 done
+
+if [[ ${#SORTING_DIRS[@]} -eq 1 && ! -d ${SORTING_DIRS[0]} ]]; then
+	echo "Warning: No category dirs in destination, zeroing out directory array..."
+	SORTING_DIRS=()
+fi
 
 while (( $(count-images-in-source) > 0 )); do
 	NEXT_IMAGE=$(get-images-in-source | head -n 1)
