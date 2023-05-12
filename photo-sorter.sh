@@ -2,7 +2,7 @@
 # Written by Charlie Cook on May 10th & 11th, 2023
 
 function get-images-in-source {
-	find "$SOURCE_DIR/." | grep "\.gif\|\.jpg\|\.png"
+	find "$SOURCE_DIR/." | grep "\.gif\|\.jpg\|\.png" | sort -r
 }
 
 function count-images-in-source {
@@ -70,7 +70,8 @@ while (( $(count-images-in-source) > 0 )); do
 	while (( ! $PROCESSED )); do
 		list-sorting-dirs ${SORTING_DIRS[@]}
 		echo "Enter the number of the directory to move this picture into,"
-		echo "Or press 'n' to make a new directory, which the picture will be moved into."
+		echo "Or press 'n' to make a new directory, which the picture will be moved into,"
+		echo "Or press 'q' to quit sorting and pick up later."
 		echo -n ">"
 		
 		read ENTRY
@@ -95,6 +96,9 @@ while (( $(count-images-in-source) > 0 )); do
 					PROCESSED=1
 				fi
 			done
+		elif [[ $ENTRY == "q" ]]; then
+			kill $DISPLAY_PID
+			exit
 		else
 			if (( $ENTRY < 0 || $ENTRY > ${#SORTING_DIRS[@]} - 1 )); then
 				echo
