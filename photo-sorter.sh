@@ -2,7 +2,7 @@
 # Written by Charlie Cook on May 10th & 11th, 2023
 
 function get-images-in-source {
-	find "$SOURCE_DIR/." | grep "\.gif\|\.jpg\|\.png" | sort -r
+	find "$SOURCE_DIR/." -maxdepth 1 | grep "\.gif\|\.jpg\|\.png" | sort -r
 }
 
 function count-images-in-source {
