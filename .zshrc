@@ -2,6 +2,9 @@
 autoload -Uz compinit promptinit
 compinit
 promptinit
+# Constants for ANSI text highlighting
+INVERSETEXT="\x1B[0;7m"
+NORMALTEXT="\x1B[0m"
 # Prompts left and right! Ah!
 PROMPT="%B%n%b@%F{12}%S%M%s%f:%U%3~%u $ "
 RPROMPT="[%?] %*, %W"
@@ -160,6 +163,15 @@ function loadbar-delta() {
 	echo "ELAPSED TIME: $TENSEC"
 	echo "CURRENT DELAY: $loadbar_delay"
 	echo -n "DELTA: "; echo "0.125 - ($TENSEC / 80)" | bc -l
+}
+function findgrep() {
+	EXTENSION="$1"
+	GREPTERM="$2"
+	find . -name $EXTENSION | while read filename; do
+		(( $(grep -c $GREPTERM $filename) )) && \
+		echo -e ${INVERSETEXT}${filename}${NORMALTEXT} && \
+		grep $GREPTERM $filename && echo
+	done
 }
 # tmux aliases
 alias tmuxs="tmux new -s tmux"
