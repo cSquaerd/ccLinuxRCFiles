@@ -29,10 +29,41 @@ COLOR_STRINGS=("red" "green" "yellow" "blue" "magenta" "cyan" "white")
 ANSI_ESCAPE="\033["
 
 MONO=0
+SNAKE=0
+LOG=0
+LOGFILE="/tmp/barf.log"
+
+get_delta() {
+	echo seq -1 1 | sed 's/ /\n/g' | shuf -n 1
+}
+
+get_row() {
+	(( SNAKE )) &&
+	echo "rows = $(tput lines); r1 = (${R0} + $(get_delta)) % rows;	if (r1 < 0) rows else r1" | bc ||
+	seq 1 $(tput lines) | shuf -n 1
+}
+
+get_column() {
+	(( SNAKE )) &&
+	echo "cols = $(tput cols); c1 = (${C0} + $(get_delta)) % cols; if (c1 < 0) cols else c1" | bc ||
+	seq 1 $(tput cols) | shuf -n 1
+}
+
 for ARG in ${@}; do
 	if [[ ${ARG} == "-h" || ${ARG} == "--half" ]]; then
 		BLOCKS=( ${BLOCK_TH} ${BLOCK_BH} ${BLOCK_A} ${BLOCK_O} )
 		echo "Only vertical half blocks and whole blocks active."
+	elif [[ ${ARG} == "-s" || ${ARG} == "--snake" ]]; then
+		R0=$(get_row)
+		C0=$(get_column)
+
+		SNAKE=1
+		echo "Snake mode active, starting from (${C0}, ${R0})."
+	elif [[ ${ARG} == "-l" || ${ARG} == "--log" ]]; then
+		LOG=1
+
+		echo "" > ${LOGFILE}
+		echo "Logging enabled."
 	elif [[ ${ARG} == "-m" || ${ARG} == "--mono" || ${ARG} == "--monocolor" ]]; then
 		echo "Looking for monocolor color."
 		MONO=1
@@ -85,22 +116,22 @@ get_background_color() {
 	echo ${BG} | sed 's/ /\n/g' | shuf -n 1
 }
 
-get_row() {
-	seq 1 $(tput lines) | shuf -n 1
-}
-
-get_column() {
-	seq 1 $(tput cols) | shuf -n 1
-}
-
 echo "Press return to stop."
 
 # Hide the cursor
 echo -en "${ANSI_ESCAPE}?25l"
 
 while : ; do
-	echo -en "${ANSI_ESCAPE}$(get_row);$(get_column)H"
+	R1=$(get_row)
+	C1=$(get_column)
+	echo -en "${ANSI_ESCAPE}${R1};${C1}H"
 	echo -en "${ANSI_ESCAPE}$(get_foreground_color);$(get_background_color)m$(get_block)${ANSI_ESCAPE}0m"
+
+	(( LOG )) && echo "("$(echo "${C1} - ${C0}" | bc)", "$(echo "${R1} - ${R0}" | bc)"): (${C0}, ${R0}) -> (${C1}, ${R1})" >> ${LOGFILE}
+
+	R0=$R1
+	C0=$C1
+
 	read -t 0
 	if (( ! $? )); then
 		break 
