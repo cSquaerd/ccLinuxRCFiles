@@ -64,8 +64,13 @@ alias sysusr="systemctl --user"
 alias sshkls="ssh-add -l"
 alias sshkul="ssh-add .ssh/daedalusKey"
 alias sshklk="ssh-add -D"
+# NetworkManager aliases
+alias nmcs="nmcli conn show --active"
+alias nmdw="nmcli dev wifi list"
+alias nmcd="nmcli conn del"
+alias nmciw="nmcli conn imp type wireguard file"
 # Alacritty settings aliases
-alias alaftszg="grep size ~/.alacritty.yml | cut -d ':' -f 2 | xargs"
+alias alaftszg="grep size ~/.alacritty.toml | cut -d '=' -f 2 | xargs"
 function ala_font_size_set {
 	MINSIZE=8
 	if (( ${#2} == 0 )); then
@@ -76,7 +81,7 @@ function ala_font_size_set {
 	NEWSIZE=$1
 
 	if (( $NEWSIZE >= $MINSIZE )); then
-		sed -i.old "s/size: $OLDSIZE/size: $NEWSIZE/" ~/.alacritty.yml
+		sed -i.old "s/size = $OLDSIZE/size = $NEWSIZE/" ~/.alacritty.toml
 	fi
 }
 function ala_font_size_tick {
@@ -89,14 +94,14 @@ function ala_font_size_tick {
 alias alaftszs="ala_font_size_set"
 alias alaftszp="ala_font_size_tick 1"
 alias alaftszm="ala_font_size_tick -1"
-alias alaalphg="grep opacity ~/.alacritty.yml | cut -d ':' -f 2 | xargs"
+alias alaalphg="grep opacity ~/.alacritty.toml | cut -d '=' -f 2 | xargs"
 function ala_alpha_tick {
 	DELTA=$1
 	OLDALPHA=$(alaalphg)
 	(( NEWALPHA = $OLDALPHA + $DELTA ))
 
 	if (( $NEWALPHA >= 0.0 && $NEWALPHA <= 1.0 )); then
-		sed -i.old "s/opacity: $OLDALPHA/opacity: $NEWALPHA/" ~/.alacritty.yml
+		sed -i.old "s/opacity = $OLDALPHA/opacity = $NEWALPHA/" ~/.alacritty.toml
 	fi
 }
 alias alaalphp="ala_alpha_tick 0.05"
@@ -167,11 +172,47 @@ function loadbar-delta() {
 function findgrep() {
 	EXTENSION="$1"
 	GREPTERM="$2"
+	GREPFLAGS=(${@:3})
 	find . -name $EXTENSION | while read filename; do
 		(( $(grep -c $GREPTERM $filename) )) && \
 		echo -e ${INVERSETEXT}${filename}${NORMALTEXT} && \
-		grep $GREPTERM $filename && echo
+		grep -n $GREPTERM $filename ${GREPFLAGS[*]} && echo
 	done
+}
+function colors() {
+	printf "% 17.1d  " 0
+	for N in $(seq 0 15); do
+		echo -en "\x1B[38;5;${N};48;5;${N}m\u2588\u2580\x1B[0m"
+	done
+	printf " % -2d\n\n" 15
+
+	VERT=( "|" "|" "G" "+" "|" "V" )
+	for RI in 0 3; do
+		for G in $(seq 0 5); do
+			for R in $(seq ${RI} $(( RI + 2 ))); do
+				(( G == 0 || G == 5 )) && printf "% 5.2d  " "$(( 36 * R + 6 * G + 16 ))"
+				(( G == 3 )) && echo -n " R=${R} > "
+				(( G != 0 && G != 3 && G != 5 )) && echo -n "       "
+				
+				for B in $(seq 0 5); do
+					(( C = 36 * R + 6 * G + B + 16 ))
+					echo -en "\x1B[38;5;${C};48;5;${C}m\u2588\u2580\x1B[0m"
+				done
+				
+				(( R == 0 )) && echo -n "  ${VERT[$(( G + 1 ))]}" || echo -n "  |"
+			done
+			
+			echo
+		done
+		(( R == 2 )) && echo "        -- B+ -->"
+	done
+	echo
+
+	printf "% 9.1d  " 232
+	for N in $(seq 232 255); do
+		echo -en "\x1B[38;5;${N};48;5;${N}m\u2588\u2580\x1B[0m"
+	done
+	printf " % -3d\n" 255
 }
 # tmux aliases
 alias tmuxs="tmux new -s tmux"
@@ -180,12 +221,12 @@ alias tmuxl="tmux list-sessions"
 alias tmuxk="tmux kill-session"
 # fun stuff aliases
 alias termsize="echo \$LINES lines x \$COLUMNS columns"
-alias cowsay="cowsay -W 72"
+alias cowsay="cowsay -W \$(( \$(tput cols) - 3 ))"
 alias fortune="fortune -sn 384 computers debian education linux literature magic news perl science startrek wisdom"
 # cowfile fetchers
-alias getspam="shufone \$(\\ls ~/cowfiles/spam*)"
-alias gethero="shufone \$(\\ls ~/cowfiles/*_ff*)"
-alias getsprite="shufone \$(\\ls ~/cowfiles/*)"
+alias getspam="shufone \$(\\ls ~/cowfiles/spam*.cow)"
+alias gethero="shufone \$(\\ls ~/cowfiles/*_ff*.cow)"
+alias getsprite="shufone \$(\\ls ~/cowfiles/*.cow)"
 # delayed printing
 alias printstag="awk '{print \$0; system(\"sleep 0.035\");}'"
 alias printslow="awk '{print \$0; system(\"sleep 0.100\");}'"
