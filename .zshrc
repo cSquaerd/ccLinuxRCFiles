@@ -20,7 +20,10 @@ alias lz="ls -S"
 alias lza="lz -a"
 # coreutil & systemd aliases
 alias susys="sudo systemctl"
-alias df="df -hT -x \"tmpfs\" -x \"devtmpfs\""
+alias df="df -hT -x \"tmpfs\" -x \"devtmpfs\" -x \"efivarfs\" -x \"vfat\" --total"
+alias dfrawsiz="df | awk '{printf \"% 4s / % -5s :: %s\n\", \$4, \$3, \$1}' | sort -h"
+alias dfpercnt="df | awk '{printf \"(% 4s) % 4s / % -5s :: %s\n\", \$6, \$4, \$3, \$1}' | sort -h"
+alias diff="diff --color=auto"
 alias du="du -chs "
 alias grep="grep --color=auto -i"
 alias grepn="grep -n"
@@ -168,6 +171,19 @@ function loadbar-delta() {
 	echo "ELAPSED TIME: $TENSEC"
 	echo "CURRENT DELAY: $loadbar_delay"
 	echo -n "DELTA: "; echo "0.125 - ($TENSEC / 80)" | bc -l
+}
+function ffmpeg-crop {
+	INFILE=$1
+	SUFFIX=".$(basename $INFILE | cut -d . -f 2)"
+	BASENAME=$(basename $INFILE $SUFFIX)
+	OUTPATH=$(realpath $INFILE | sed "s/${BASENAME}${SUFFIX}//")
+	#echo $SUFFIX $BASENAME $OUTPATH
+	
+	STARTTIME=$2
+	ENDTIME=$3
+	ALTNAME=$4
+	
+	ffmpeg -ss $STARTTIME -to $ENDTIME -i $INFILE -c copy ${OUTPATH}${BASENAME}${ALTNAME}${SUFFIX}
 }
 function findgrep() {
 	EXTENSION="$1"
