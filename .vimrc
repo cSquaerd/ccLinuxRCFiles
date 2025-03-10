@@ -32,6 +32,9 @@ set whichwrap+=<,>,[,]
 set guifont=Cascadia\ Code\ PL\ Medium\ 16
 " colorscheme fruity
 colorscheme default
+hi visual      ctermfg=none    ctermbg=none cterm=reverse
+hi search      ctermfg=none    ctermbg=none cterm=reverse
+hi linenr      ctermfg=white   cterm=italic
 hi conditional ctermfg=cyan    cterm=bold
 hi repeat      ctermfg=cyan    cterm=bold
 hi identifier  ctermfg=white
@@ -42,22 +45,25 @@ hi preproc     ctermfg=cyan
 hi type        ctermfg=green
 hi comment     ctermfg=gray
 hi string      ctermfg=yellow
-hi number      ctermfg=33
-hi boolean     ctermfg=33
+hi number      ctermfg=33      cterm=bold
+hi boolean     ctermfg=33      cterm=bold
 hi special     ctermfg=208
-hi normal      guifg=white   guibg=black
-hi conditional guifg=cyan    gui=bold
-hi repeat      guifg=cyan    gui=bold
+hi normal      guifg=white     guibg=black
+hi search      gui=reverse
+hi visual      gui=reverse
+hi linenr      guifg=white     gui=italic
+hi conditional guifg=cyan      gui=bold
+hi repeat      guifg=cyan      gui=bold
 hi identifier  guifg=white
-hi function    guifg=white   gui=bold
+hi function    guifg=white     gui=bold
 hi statement   guifg=magenta
 hi operator    guifg=red
 hi preproc     guifg=cyan
 hi type        guifg=green
 hi comment     guifg=gray
 hi string      guifg=yellow
-hi number      guifg=lightblue
-hi boolean     guifg=lightblue
+hi number      guifg=lightblue gui=bold
+hi boolean     guifg=lightblue gui=bold
 hi special     guifg=orange
 let g:powerline_pycmd="py3"
 let g:Tex_DefaultTargetFormat="pdf"
