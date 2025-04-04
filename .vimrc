@@ -34,6 +34,7 @@ set guifont=Cascadia\ Code\ PL\ Medium\ 16
 colorscheme default
 hi visual      ctermfg=none    ctermbg=none cterm=reverse
 hi search      ctermfg=none    ctermbg=none cterm=reverse
+hi spellbad    ctermfg=red     ctermbg=none cterm=reverse
 hi linenr      ctermfg=white   cterm=italic
 hi conditional ctermfg=cyan    cterm=bold
 hi repeat      ctermfg=cyan    cterm=bold
