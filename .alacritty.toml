@@ -1,0 +1,43 @@
+[colors.bright]
+black = "#555555"
+blue = "#5555ff"
+cyan = "#55ffff"
+green = "#55ff55"
+magenta = "#ff55ff"
+red = "#ff5555"
+white = "#ffffff"
+yellow = "#ffff55"
+
+[colors.normal]
+black = "#000000"
+blue = "#0000aa"
+cyan = "#00aaaa"
+green = "#00aa00"
+magenta = "#aa00aa"
+red = "#aa0000"
+white = "#aaaaaa"
+yellow = "#aa5500"
+
+[colors.primary]
+background = "#200020" #000000"
+foreground = "#ffc8ff" #ffffff"
+
+[colors]
+draw_bold_text_with_bright_colors = true
+
+[env]
+TERM = "xterm-256color"
+
+[font]
+size = 13
+
+[font.normal]
+family = "Cascadia Code PL"
+style = "Regular"
+
+[window]
+opacity = 0.6500000000
+
+[window.dimensions]
+columns = 80
+lines = 24
