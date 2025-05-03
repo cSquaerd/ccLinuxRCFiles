@@ -46,8 +46,8 @@ alias grin="grep installed -A 1"
 kernelName="linux-zen"
 kernelSuffix="zen"
 function getKernelVersions() {
-	installedKernel=\$(pacman -Q $kernelName | sed 's/\./ /g; s/-/ /g; s/[a-z]/ /g' | xargs | awk '{print $1"."$2"."$3}')
-	runningKernel=\$(uname -r | sed 's/\./ /g; s/-/ /g; s/[a-z]/ /g' | xargs | awk '{print $1"."$2"."$3}')
+	installedKernel=$(pacman -Q $kernelName | sed 's/\./ /g; s/-/ /g; s/[a-z]/ /g' | xargs | awk '{print $1"."$2"."$3}')
+	runningKernel=$(uname -r | sed 's/\./ /g; s/-/ /g; s/[a-z]/ /g' | xargs | awk '{print $1"."$2"."$3}')
 }
 function rebootCheck() {
 	getKernelVersions
