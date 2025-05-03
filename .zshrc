@@ -45,7 +45,10 @@ alias grin="grep installed -A 1"
 # rebootCheck components
 kernelName="linux-zen"
 kernelSuffix="zen"
-alias getKernelVersions="installedKernel=\$(pacman -Q $kernelName | awk '{print \$2}' | awk -F '.$kernelSuffix' '{print \$1}'); runningKernel=\$(uname -r | awk -F '-' '{print \$1}')"
+function getKernelVersions() {
+	installedKernel=\$(pacman -Q $kernelName | sed 's/\./ /g; s/-/ /g; s/[a-z]/ /g' | xargs | awk '{print $1"."$2"."$3}')
+	runningKernel=\$(uname -r | sed 's/\./ /g; s/-/ /g; s/[a-z]/ /g' | xargs | awk '{print $1"."$2"."$3}')
+}
 function rebootCheck() {
 	getKernelVersions
 	echo '  Running Kernel Version:' $runningKernel
@@ -252,11 +255,10 @@ alias herofortune="fortune | cowsay -f \$(gethero)"
 alias spamfortune="fortune | cowsay -f \$(getspam)"
 function show-cowfiles() {
 	X=""
-	PATHTOCOWSPRITES=/home/charlie/Desktop/ccCowsprites
 	while : ; do
-		python ${PATHTOCOWSPRITES}/paletteTest.py | printstag
-		sleep 0.5
-		for c in ~/cowfiles/*; do
+		colors | printstag
+		sleep 2.5
+		for c in ~/cowfiles/*.cow; do
 			cowsay -f $c $(basename -s ".cow" $c) | printstag
 			read -k 1 -t 0.5 X
 			if [[ ${#X} -gt 0 ]]; then
